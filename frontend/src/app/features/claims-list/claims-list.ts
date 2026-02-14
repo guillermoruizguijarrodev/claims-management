@@ -31,9 +31,10 @@ export class ClaimsList {
    * Helper function to determine the severity (color) of the status tag.
    * PrimeNG severities: 'success' | 'info' | 'warning' | 'danger'
    */
-  getSeverity(status: string): 'success' | 'warn' | 'danger' | undefined {
+  getSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' |undefined {
     if (status === 'FINISHED') return 'success';
     if (status === 'PENDING') return 'warn';
+    if (status === 'IN_REVIEW') return 'info';
     return undefined; // Default color
   }
 }
