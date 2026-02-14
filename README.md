@@ -24,7 +24,7 @@ Ensure you have the following installed on your machine: \* **Node.js**
 
 ### 2. Installation
 
-We have configured a unified command to install all dependencies for the
+It is configured a unified command to install all dependencies for the
 root, backend, and frontend in one go.
 
 Open your terminal in the root directory of the project and run:
@@ -62,7 +62,7 @@ cp .env.example .env
     Open the newly created .env file in your code editor.
 
 > **Action Required:** Replace the placeholder value of `MONGO_URI` with
-> the actual connection string provided in the submission email.
+> the actual connection string provided via email.
 
 4.  Return to the root directory:
 
