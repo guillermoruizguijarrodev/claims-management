@@ -61,7 +61,7 @@ cp .env.example .env
 3.  Update the .env file\
     Open the newly created .env file in your code editor.
 
-> **Action Required:** Replace the placeholder value of `MONGO_URI` with
+> **Action Required:** Replace the value of `MONGO_URI` with
 > the actual connection string provided via email.
 
 4.  Return to the root directory:
