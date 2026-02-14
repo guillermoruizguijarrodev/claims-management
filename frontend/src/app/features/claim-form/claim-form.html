@@ -1,0 +1,103 @@
+<div class="max-w-4xl mx-auto p-6">
+    
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-3xl font-bold">New Claim</h2>
+        <p-button 
+            label="Cancel" 
+            icon="pi pi-times" 
+            [outlined]="true" 
+            severity="secondary" 
+            routerLink="/" 
+        />
+    </div>
+
+    <form [formGroup]="claimForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+
+        <p-card header="General Information" styleClass="shadow-sm">
+            <div class="flex flex-col gap-4">
+                
+                <div class="flex flex-col gap-2">
+                    <label for="title" class="font-semibold">Title</label>
+                    <input 
+                        pInputText 
+                        id="title" 
+                        formControlName="title" 
+                        placeholder="E.g. Collision at intersection"
+                        class="w-full"
+                    />
+                    @if (claimForm.get('title')?.invalid && claimForm.get('title')?.touched) {
+                        <small class="text-red-500">Title is required (min 5 chars).</small>
+                    }
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label for="description" class="font-semibold">Description</label>
+                    <textarea 
+                        pTextarea 
+                        id="description" 
+                        formControlName="description" 
+                        rows="4" 
+                        placeholder="Describe detailed events..."
+                        class="w-full"
+                        style="width: 100%"
+                    ></textarea>
+                    @if (claimForm.get('description')?.invalid && claimForm.get('description')?.touched) {
+                        <small class="text-red-500">Description is required.</small>
+                    }
+                </div>
+            </div>
+        </p-card>
+
+        <div class="flex justify-between items-center mt-4 border-b pb-2">
+            <h3 class="text-2xl font-bold">Damages List</h3>
+            <p-button 
+                label="Add Damage" 
+                icon="pi pi-plus" 
+                (onClick)="addDamage()" 
+                size="small"
+                [outlined]="true"
+            />
+        </div>
+
+        @if (damagesArray.controls.length === 0) {
+            <div class="p-10 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg text-center">
+                <i class="pi pi-exclamation-circle text-4xl text-gray-300 mb-2"></i>
+                <p class="text-gray-500 font-medium">No damages added yet.</p>
+                <p class="text-gray-400 text-sm">Click "Add Damage" to register a new damaged part.</p>
+            </div>
+        }
+
+        @for (damageGroup of damagesArray.controls; track $index) {
+            
+            <div [formGroup]="$any(damageGroup)" class="relative animate-fade-in-down">
+                
+                <p-card styleClass="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    
+                    <div class="absolute top-4 right-4 z-10">
+                        <p-button 
+                            icon="pi pi-trash" 
+                            [rounded]="true" 
+                            severity="danger" 
+                            [text]="true"
+                            (onClick)="removeDamage($index)"
+                            pTooltip="Remove this damage"
+                        />
+                    </div>
+                    <app-damage-fields [group]="$any(damageGroup)" />
+                </p-card>
+            </div>
+        }
+
+        <div class="flex justify-end pt-4 pb-12">
+            <p-button 
+                label="Save Claim" 
+                icon="pi pi-check" 
+                type="submit" 
+                [disabled]="claimForm.invalid"
+                size="large"
+                styleClass="p-button-primary"
+            />
+        </div>
+
+    </form>
+</div>

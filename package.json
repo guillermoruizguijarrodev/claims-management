@@ -1,0 +1,14 @@
+{
+  "name": "claims-management-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "start": "concurrently \"npm run start:dev --prefix backend\" \"npm run start --prefix frontend\"",
+    "test:cov": "npm run test:cov --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {}
+}

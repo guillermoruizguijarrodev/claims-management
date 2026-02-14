@@ -1,0 +1,58 @@
+
+<div [formGroup]="group" class="flex flex-col gap-4">
+    
+    <div class="flex flex-col gap-2">
+        <label class="font-semibold text-sm">Part Description</label>
+        <input pInputText formControlName="part" placeholder="e.g. Rear Window" class="w-full" />
+        
+        @if (group.get('part')?.invalid && (group.get('part')?.dirty || group.get('part')?.touched)) {
+            <small class="text-red-500">Part description is required.</small>
+        }
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label class="font-semibold text-sm">Severity</label>
+        <p-select 
+            [options]="severityOptions" 
+            formControlName="severity" 
+            placeholder="Select Level"
+            appendTo="body"
+            styleClass="w-full" 
+            [style]="{'width':'100%'}"
+        />
+        
+        @if (group.get('severity')?.invalid && (group.get('severity')?.dirty || group.get('severity')?.touched)) {
+            <small class="text-red-500">Severity level is required.</small>
+        }
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label class="font-semibold text-sm">Cost (€)</label>
+        <p-inputNumber 
+            formControlName="price" 
+            mode="currency" 
+            currency="EUR" 
+            locale="es-ES" 
+            styleClass="w-full"
+            class="w-full"
+            [inputStyle]="{'width':'100%'}"
+        />
+
+        @if (group.get('price')?.invalid && (group.get('price')?.dirty || group.get('price')?.touched)) {
+            <small class="text-red-500">Cost is required.</small>
+        }
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label class="font-semibold text-sm">Image URL</label>
+        <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-image"></i></span>
+            <input pInputText formControlName="imageUrl" placeholder="https://..." />
+        </div>
+
+        @if (group.get('imageUrl')?.invalid && (group.get('imageUrl')?.dirty || group.get('imageUrl')?.touched)) {
+            <small class="text-red-500">Image URL is required.</small>
+        }
+    </div>
+
+</div>

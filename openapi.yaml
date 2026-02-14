@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Claims Management System
+  version: 1.0.0
+  description: API for managing claims and damages with strict business rules.
+servers:
+  - url: http://localhost:3000/api/v1
+paths:
+  /claims:
+    get:
+      operationId: getClaims
+      summary: Retrieve all claims
+      tags: [Claims]
+      responses:
+        '200':
+          description: List of claims
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Claim'
+    post:
+      operationId: createClaim
+      summary: Create a new claim
+      tags: [Claims]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClaimDto'
+      responses:
+        '201':
+          description: Claim created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+
+  /claims/{id}:
+    get:
+      operationId: getClaimById
+      summary: Get a claim by ID with its damages
+      tags: [Claims]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Claim details found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+        '404':
+          description: Claim not found
+
+    patch:
+      operationId: updateClaim
+      summary: Update any field of a claim
+      tags: [Claims]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  $ref: '#/components/schemas/ClaimStatus'
+                totalAmount:
+                  type: number
+              additionalProperties: false
+      responses:
+        '200':
+          description: Claim updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+        '400':
+          description: Invalid input or business rule violation
+        '404':
+          description: Claim not found
+
+  /claims/{id}/damages:
+    post:
+      operationId: addDamage
+      summary: Add a damage to a claim
+      tags: [Damages]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDamageDto'
+      responses:
+        '201':
+          description: Damage added. Returns updated Claim to refresh totals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+
+  /claims/{id}/damages/{damageId}:
+    delete:
+      operationId: deleteDamage
+      summary: Remove a damage
+      tags: [Damages]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: damageId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Damage deleted. Returns updated Claim.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+
+    patch:
+      operationId: updateDamage
+      summary: Update a specific damage in a claim
+      tags: [Damages]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: damageId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                part:
+                  type: string
+                severity:
+                  $ref: '#/components/schemas/DamageSeverity'
+                price:
+                  type: number
+                imageUrl:
+                  type: string
+              required: [part, severity, price, imageUrl]
+      responses:
+        '200':
+          description: Damage updated successfully. Returns updated Claim.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+        '400':
+          description: Invalid input or business rule violation
+        '404':
+          description: Claim or Damage not found
+
+components:
+  schemas:
+    ClaimStatus:
+      type: string
+      enum: [PENDING, IN_REVIEW, FINISHED]
+
+    DamageSeverity:
+      type: string
+      enum: [LOW, MID, HIGH]
+
+    Damage:
+      type: object
+      required: [id, part, severity, price, imageUrl]
+      properties:
+        id:
+          type: string
+        part:
+          type: string
+        severity:
+          $ref: '#/components/schemas/DamageSeverity'
+        imageUrl:
+          type: string
+        price:
+          type: number
+
+    Claim:
+      type: object
+      required: [id, title, status, totalAmount, damages]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/ClaimStatus'
+        totalAmount:
+          type: number
+          description: Calculated by the backend
+        damages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Damage'
+
+    CreateClaimDto:
+      type: object
+      required: [title, description]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        damages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateDamageDto'
+
+    CreateDamageDto:
+      type: object
+      required: [part, severity, price, imageUrl]
+      properties:
+        part:
+          type: string
+        severity:
+          $ref: '#/components/schemas/DamageSeverity'
+        imageUrl:
+          type: string
+        price:
+          type: number
